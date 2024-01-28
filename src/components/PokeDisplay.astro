@@ -1,0 +1,111 @@
+---
+import { Image, getImage } from "astro:assets";
+import TypeCards from "./pokemon/TypeCards.astro";
+import AbilityList from "./pokemon/AbilityList.astro";
+import type { Pokemon } from "../pokeapi/pokemon";
+
+interface Props {
+  pokemon: Pokemon;
+}
+
+const { pokemon } = Astro.props;
+
+const sprite = pokemon.pokemon_v2_pokemonsprites[0].sprites && await getImage({
+  src: pokemon.pokemon_v2_pokemonsprites[0].sprites,
+  format: "webp",
+  width: 400,
+  height: 400
+});
+---
+
+<section>
+  <div>
+    {sprite && <Image
+      src={sprite.src}
+      alt={pokemon.name}
+      width={400}
+      height={400}
+      format="webp"
+    />}
+  </div>
+
+  <article>
+    <div>
+      <h2><span class="name">{pokemon.name}</span></h2>
+      <TypeCards types={pokemon.pokemon_v2_pokemontypes} />
+    </div>
+
+    <AbilityList abilities={pokemon.pokemon_v2_pokemonabilities} />
+
+    <table>
+      <thead>
+        <th colspan="2">Info</th>
+      </thead>
+      <tbody>
+        <tr>
+          <th>Height:</th>
+          <td>{pokemon.height / 10}m</td>
+        </tr>
+        <tr>
+          <th>Weight:</th>
+          <td>{pokemon.weight / 10}kg</td>
+        </tr>
+      </tbody>
+    </table>
+  </article>
+</section>
+
+<style>
+  section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    column-gap: 3rem;
+
+    place-items: center start;
+  }
+
+  section > div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+
+  article {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    row-gap: 1rem;
+  }
+
+  a {
+    display: grid;
+    place-items: center;
+
+    color: unset;
+    font-size: 4.5rem;
+
+    /* outline: 1px solid red; */
+
+    margin: -0.5rem;
+  }
+
+  img {
+    border: 1px solid black;
+    border-radius: 1rem;
+  }
+
+  .name {
+    text-transform: capitalize;
+  }
+
+  th, td {
+    padding-left: 0.5rem;
+  }
+
+  thead > th {
+    align-self: start
+  }
+</style>

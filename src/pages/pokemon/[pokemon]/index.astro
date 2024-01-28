@@ -1,0 +1,50 @@
+---
+import type { GetStaticPaths } from "astro";
+import Base from "../../../layouts/Base.astro";
+import PokeDisplay from "../../../components/PokeDisplay.astro";
+import { pokemons, type Species } from "../../../pokeapi/pokemon";
+
+interface Props {
+  species: Species;
+  next?: string;
+  last?: string;
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return pokemons.map((species) => ({
+    params: { pokemon: species.name },
+    props: { species },
+  }));
+};
+
+const { name } = Astro.params;
+const { species } = Astro.props;
+---
+
+<Base title=`Pokémon ${name}`>
+  <main>
+    {
+      species.pokemon_v2_pokemons.map((pokemon) => (
+        <PokeDisplay
+          pokemon={pokemon}
+          transition:animate="slide"
+          transition:name="pokedisplay"
+        />
+      ))
+    }
+  </main>
+</Base>
+
+<style>
+  main {
+    padding: 2rem;
+
+    flex: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    row-gap: 1rem;
+    flex-direction: column;
+  }
+</style>

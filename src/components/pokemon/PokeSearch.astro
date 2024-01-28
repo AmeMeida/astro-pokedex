@@ -1,0 +1,36 @@
+---
+interface Props {
+  current?: number;
+}
+---
+
+<script>
+  import { navigate } from "astro:transitions/client";
+
+  class PokeSearch extends HTMLSelectElement {
+    constructor() {
+      super();
+
+      this.addEventListener("change", this.change);
+    }
+
+    change() {
+      const pokemon = this.value;
+      navigate(`/pokemon/${pokemon}`);
+    }
+  }
+
+  customElements.define("poke-search", PokeSearch, { extends: "select" });
+</script>
+
+<select name="pokemon" is="poke-search">
+  <option value="1">Bulbasaur</option>
+  <option value="2">Ivysaur</option>
+  <option value="3">Venusaur</option>
+  <option value="4">Charmander</option>
+  <option value="5">Charmeleon</option>
+  <option value="6">Charizard</option>
+  <option value="7">Squirtle</option>
+  <option value="8">Wartortle</option>
+  <option value="9">Blastoise</option>
+</select>
