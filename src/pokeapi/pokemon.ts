@@ -36,7 +36,7 @@ export type Pokemon = {
   pokemon_v2_pokemonabilities: Ability[];
   pokemon_v2_pokemonsprites: [
     {
-      sprites: string;
+      sprites: string | null;
     }
   ];
 };
@@ -103,7 +103,14 @@ export const {
 }).then((pokemon) => pokemon.json() as Promise<{ data: QueryResult }>);
 
 export const pokemonNameToSprite = new Map<string, string>(pokemons.flatMap((species) => species.pokemon_v2_pokemons.map((pokemon) => {
-  return [pokemon.name, pokemon.pokemon_v2_pokemonsprites[0].sprites] as const;
+  const sprite = pokemon.pokemon_v2_pokemonsprites[0].sprites;
+
+  if (!sprite) {
+    return ["", ""];
+  }
+
+  pokemon.pokemon_v2_pokemonsprites[0].sprites = `/pokemon/${species.name}/${pokemon.name}.webp`;
+  return [pokemon.name, sprite] as const;
 })));
 
 console.timeEnd("fetch-poke");

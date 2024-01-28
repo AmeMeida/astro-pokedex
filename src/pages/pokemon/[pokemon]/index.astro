@@ -17,11 +17,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }));
 };
 
-const { name } = Astro.params;
 const { species } = Astro.props;
 ---
 
-<Base title=`Pokémon ${name}`>
+<Base title=`Pokémon ${species.name}`>
   <main>
     {
       species.pokemon_v2_pokemons.map((pokemon) => (
