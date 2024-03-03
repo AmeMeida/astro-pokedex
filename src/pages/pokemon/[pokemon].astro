@@ -6,8 +6,8 @@ import { pokemons, type Species } from "../../pokeapi/pokemon";
 
 interface Props {
   species: Species;
-  next?: string;
-  last?: string;
+  next?: Species;
+  last?: Species;
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -15,8 +15,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
     params: { pokemon: species.name },
     props: {
       species,
-      last: pokemons[species.id - 2]?.name,
-      next: pokemons[species.id]?.name
+      last: pokemons[species.id - 2],
+      next: pokemons[species.id]
     },
   }));
 };
@@ -29,7 +29,14 @@ const { species, last, next } = Astro.props;
 ---
 
 <Base title={capitalize(species.name.replace("-", " "))}>
-  <a href={`/pokemon/${last}`} data-astro-prefetch="viewport">Last</a>
+  {[...(last?.pokemon_v2_pokemons || []), ...(next?.pokemon_v2_pokemons || [])].map((pokemon) => (
+    pokemon.image && <link slot="head" rel="preload" href={pokemon.image.src} as="image" />
+  ))}
+
+  {last && <link slot="head" rel="prefetch" href={`/pokemon/${last.name}`} />}
+  {next && <link slot="head" rel="prefetch" href={`/pokemon/${next.name}`} />}
+
+  {last && <a href={`/pokemon/${last.name}`} data-astro-prefetch="load" id="last">Last</a>}
 
   <main>
     {
@@ -43,7 +50,7 @@ const { species, last, next } = Astro.props;
     }
   </main>
 
-  <a href={`/pokemon/${next}`} data-astro-prefetch="viewport">Next</a>
+  {next && <a href={`/pokemon/${next.name}`} data-astro-prefetch="load" id="next">Next</a>}
 </Base>
 
 <style>
@@ -59,3 +66,27 @@ const { species, last, next } = Astro.props;
     flex-direction: column;
   }
 </style>
+
+<script>
+  let anchorNext: HTMLAnchorElement | null;
+  let anchorLast: HTMLAnchorElement | null;
+
+  function setAnchors() {
+    anchorNext = document.getElementById("next") as HTMLAnchorElement | null;
+    anchorLast = document.getElementById("last") as HTMLAnchorElement | null;
+  }
+
+  setAnchors();
+
+  document.addEventListener("astro:after-swap", setAnchors);
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowRight" || event.key === "ArrowDown")
+      anchorNext?.click();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowLeft" || event.key === "ArrowUp")
+      anchorLast?.click();
+  });
+</script>

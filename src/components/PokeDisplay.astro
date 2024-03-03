@@ -2,25 +2,33 @@
 import TypeCards from "./pokemon/TypeCards.astro";
 import AbilityList from "./pokemon/AbilityList.astro";
 import type { Pokemon } from "../pokeapi/pokemon";
-import { Image } from "astro:assets";
 
 interface Props {
   pokemon: Pokemon;
 }
 
 const { pokemon } = Astro.props;
-
-const sprite = pokemon.pokemon_v2_pokemonsprites[0].sprites;
 ---
 
 <section>
   <div>
-    {sprite && <Image src={sprite} alt={pokemon.name} width={96} height={96} quality="low" />}
+    {
+      pokemon.image && (
+        <img
+          src={pokemon.image.src}
+          alt={pokemon.name}
+          width={400}
+          height={400}
+          loading="eager"
+          decoding="async"
+        />
+      )
+    }
   </div>
 
   <article>
     <div>
-      <h2><span class="name">{pokemon.name.replace("-", " ")}</span></h2>
+      <h2 class="name" transition:name="poke-name">{pokemon.name.replace("-", " ")} #{pokemon.id}</h2>
       <TypeCards types={pokemon.pokemon_v2_pokemontypes} />
     </div>
 

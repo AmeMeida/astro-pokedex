@@ -1,3 +1,6 @@
+import type { GetImageResult } from "astro";
+import { getImage } from "astro:assets";
+
 export const colorMap = {
   normal: "#A8A77A",
   fire: "#EE8130",
@@ -39,6 +42,7 @@ export type Pokemon = {
       sprites: string | null;
     }
   ];
+  image?: GetImageResult;
 };
 
 export type Type = {
@@ -100,7 +104,25 @@ export const {
     "X-Method-Used": "graphql",
   },
   body: JSON.stringify({ query }),
-}).then((pokemon) => pokemon.json() as Promise<{ data: QueryResult }>);
+}).then((pokemon) => pokemon.json() as Promise<{ data: QueryResult }>).then(async (pokemons) => {
+  for (const species of pokemons.data.pokemon_v2_pokemonspecies) {
+    for (const pokemon of species.pokemon_v2_pokemons) {
+      const sprite = pokemon.pokemon_v2_pokemonsprites[0]?.sprites ?? undefined;
+
+      if (sprite) {
+        pokemon.image = await getImage({
+          src: sprite,
+          alt: pokemon.name,
+          width: 96,
+          height: 96,
+          quality: "high"
+        });
+      }
+    }
+  }
+
+  return pokemons;
+});
 
 export const speciesNames = pokemons.map((species) => species.name);
 
