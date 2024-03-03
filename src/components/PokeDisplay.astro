@@ -2,6 +2,7 @@
 import TypeCards from "./pokemon/TypeCards.astro";
 import AbilityList from "./pokemon/AbilityList.astro";
 import type { Pokemon } from "../pokeapi/pokemon";
+import { Image } from "astro:assets";
 
 interface Props {
   pokemon: Pokemon;
@@ -14,14 +15,7 @@ const sprite = pokemon.pokemon_v2_pokemonsprites[0].sprites;
 
 <section>
   <div>
-    {sprite && <img
-      src={sprite},
-      alt={pokemon.name},
-      decoding="async",
-      loading="lazy",
-      width="300px"
-      height="300px"
-    />}
+    {sprite && <Image src={sprite} alt={pokemon.name} width={96} height={96} quality="low" />}
   </div>
 
   <article>
@@ -96,11 +90,12 @@ const sprite = pokemon.pokemon_v2_pokemonsprites[0].sprites;
     text-transform: capitalize;
   }
 
-  th, td {
+  th,
+  td {
     padding-left: 0.5rem;
   }
 
   thead > th {
-    align-self: start
+    align-self: start;
   }
 </style>

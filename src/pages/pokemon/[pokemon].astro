@@ -1,8 +1,8 @@
 ---
 import type { GetStaticPaths } from "astro";
-import Base from "../../../layouts/Base.astro";
-import PokeDisplay from "../../../components/PokeDisplay.astro";
-import { pokemons, type Species } from "../../../pokeapi/pokemon";
+import Base from "../../layouts/Base.astro";
+import PokeDisplay from "../../components/PokeDisplay.astro";
+import { pokemons, type Species } from "../../pokeapi/pokemon";
 
 interface Props {
   species: Species;
@@ -29,11 +29,6 @@ const { species, last, next } = Astro.props;
 ---
 
 <Base title={capitalize(species.name.replace("-", " "))}>
-  <div slot="head">
-    <link rel="preload" href={`/pokemon/${next}`} type="text/html" />
-    <link rel="preload" href={`/pokemon/${last}`} type="text/html" />
-  </div>
-
   <a href={`/pokemon/${last}`} data-astro-prefetch="viewport">Last</a>
 
   <main>
