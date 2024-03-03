@@ -22,7 +22,7 @@ export const colorMap = {
   fairy: "#D685AD",
 } as const;
 
-export type PokemonTypes = keyof typeof colorMap;
+export type PokemonType = keyof typeof colorMap;
 
 export type Species = {
   name: string;
@@ -47,7 +47,7 @@ export type Pokemon = {
 
 export type Type = {
   pokemon_v2_type: {
-    name: PokemonTypes;
+    name: PokemonType;
   };
 };
 
