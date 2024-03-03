@@ -1,0 +1,12 @@
+---
+interface Props {
+  name: string;
+  id: number;
+}
+
+const { name, id } = Astro.props;
+---
+
+<h2
+class="capitalize mb-2 text-2xl">
+  {name.replaceAll("-", " ")} #{id}</h2>
