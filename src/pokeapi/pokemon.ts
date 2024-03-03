@@ -124,6 +124,4 @@ export const {
   return pokemons;
 });
 
-export const speciesNames = pokemons.map((species) => species.name);
-
 console.timeEnd("fetch-poke");
