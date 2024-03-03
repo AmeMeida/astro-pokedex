@@ -17,11 +17,16 @@ export const GET: APIRoute = async ({ params }) => {
   const { variety } = params;
   const imageUrl = pokemonNameToSprite.get(variety!)!;
 
+  console.log(imageUrl);
+
   const rawImage = await fetch(imageUrl).then((image) => image.arrayBuffer());
 
   const image = await sharp(rawImage)
-    .resize(200, 200)
-    .webp()
+    .resize(96, 96)
+    .webp({
+      quality: 10,
+      effort: 6
+    })
     .toBuffer();
 
   return new Response(image);

@@ -102,15 +102,21 @@ export const {
   body: JSON.stringify({ query }),
 }).then((pokemon) => pokemon.json() as Promise<{ data: QueryResult }>);
 
-export const pokemonNameToSprite = new Map<string, string>(pokemons.flatMap((species) => species.pokemon_v2_pokemons.map((pokemon) => {
-  const sprite = pokemon.pokemon_v2_pokemonsprites[0].sprites;
+export const pokemonNameToSprite = new Map<string, string>(
+  pokemons.flatMap((species) =>
+    species.pokemon_v2_pokemons.map((pokemon) => {
+      const sprite = pokemon.pokemon_v2_pokemonsprites[0].sprites;
 
-  if (!sprite) {
-    return ["", ""];
-  }
+      if (!sprite) {
+        return ["", ""];
+      }
 
-  pokemon.pokemon_v2_pokemonsprites[0].sprites = `/pokemon/${species.name}/${pokemon.name}.webp`;
-  return [pokemon.name, sprite] as const;
-})));
+      pokemon.pokemon_v2_pokemonsprites[0].sprites = `/pokemon/${species.name}/${pokemon.name}.webp`;
+      return [pokemon.name, sprite] as const;
+    })
+  )
+);
+
+export const speciesNames = pokemons.map((species) => species.name);
 
 console.timeEnd("fetch-poke");

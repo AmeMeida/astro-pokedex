@@ -13,14 +13,29 @@ interface Props {
 export const getStaticPaths: GetStaticPaths = async () => {
   return pokemons.map((species) => ({
     params: { pokemon: species.name },
-    props: { species },
+    props: {
+      species,
+      last: pokemons[species.id - 2]?.name,
+      next: pokemons[species.id]?.name
+    },
   }));
 };
 
-const { species } = Astro.props;
+function capitalize(sentence: string) {
+  return sentence.split(" ").map((word) => word[0]?.toUpperCase() + word.substring(1).toLowerCase()).join(" ");
+}
+
+const { species, last, next } = Astro.props;
 ---
 
-<Base title=`Pokémon ${species.name}`>
+<Base title={capitalize(species.name.replace("-", " "))}>
+  <div slot="head">
+    <link rel="preload" href={`/pokemon/${next}`} type="text/html" />
+    <link rel="preload" href={`/pokemon/${last}`} type="text/html" />
+  </div>
+
+  <a href={`/pokemon/${last}`} data-astro-prefetch="viewport">Last</a>
+
   <main>
     {
       species.pokemon_v2_pokemons.map((pokemon) => (
@@ -32,6 +47,8 @@ const { species } = Astro.props;
       ))
     }
   </main>
+
+  <a href={`/pokemon/${next}`} data-astro-prefetch="viewport">Next</a>
 </Base>
 
 <style>

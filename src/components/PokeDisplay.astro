@@ -16,13 +16,17 @@ const sprite = pokemon.pokemon_v2_pokemonsprites[0].sprites;
   <div>
     {sprite && <img
       src={sprite},
-      alt={pokemon.name}
+      alt={pokemon.name},
+      decoding="async",
+      loading="lazy",
+      width="300px"
+      height="300px"
     />}
   </div>
 
   <article>
     <div>
-      <h2><span class="name">{pokemon.name}</span></h2>
+      <h2><span class="name">{pokemon.name.replace("-", " ")}</span></h2>
       <TypeCards types={pokemon.pokemon_v2_pokemontypes} />
     </div>
 
