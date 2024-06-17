@@ -62,6 +62,16 @@ type QueryResult = {
   pokemon_v2_pokemonspecies: Species[];
 };
 
+const substituteSprite =
+  "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/substitute.png";
+
+export const substituteImage = await getImage({
+  src: substituteSprite,
+  width: 96,
+  height: 96,
+  quality: "high"
+});
+
 const query = `
   query getPokemon {
     pokemon_v2_pokemonspecies(order_by: {id: asc}) {
@@ -109,15 +119,13 @@ export const {
     for (const pokemon of species.pokemon_v2_pokemons) {
       const sprite = pokemon.pokemon_v2_pokemonsprites[0]?.sprites ?? undefined;
 
-      if (sprite) {
-        pokemon.image = await getImage({
-          src: sprite,
-          alt: pokemon.name,
-          width: 96,
-          height: 96,
-          quality: "high"
-        });
-      }
+      pokemon.image = sprite ? await getImage({
+        src: sprite,
+        alt: pokemon.name,
+        width: 96,
+        height: 96,
+        quality: "high"
+      }) : substituteImage;
     }
   }
 

@@ -1,36 +1,22 @@
 ---
-import { colorMap, type Type } from '../../pokeapi/pokemon';
+import { colorMap, type Type } from "../../pokeapi/pokemon";
 
 interface Props {
-  types: Type[]
+  types: Type[];
 }
 
 const { types } = Astro.props;
 ---
 
-<ul>
-  {types.map((type) => <li style={{ "--typeColor": colorMap[type.pokemon_v2_type.name] }}>{type.pokemon_v2_type.name}</li>)}
+<ul class="flex flex-wrap flex-row gap-2">
+  {
+    types.map((type) => (
+      <li
+        class="bg-[var(--typeColor)] capitalize font-bold py-1 px-2 text-white rounded-md text-sm"
+        style={{ "--typeColor": colorMap[type.pokemon_v2_type.name] }}
+      >
+        {type.pokemon_v2_type.name}
+      </li>
+    ))
+  }
 </ul>
-
-<style>
-  ul {
-    display: flex;
-    flex-wrap: wrap;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  li {
-    background-color: var(--typeColor);
-    border-radius: 0.5rem;
-    color: white;
-    font-size: 0.75rem;
-    font-weight: bold;
-    margin: 0.25rem;
-    padding: 0.25rem 0.5rem;
-    text-transform: capitalize;
-    list-style: none;
-    height: min-content;
-  }
-</style>

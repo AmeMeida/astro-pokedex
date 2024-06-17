@@ -1,0 +1,109 @@
+---
+import type { GetStaticPaths } from "astro";
+import Base from "../layouts/Base.astro";
+import PokeDisplay from "../components/PokeDisplay.astro";
+import { pokemons, type Species } from "../pokeapi/pokemon";
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  species: Species;
+  next?: Species;
+  last?: Species;
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const routes = pokemons.map((species) => ({
+    params: { pokemon: species.name },
+    props: {
+      species,
+      last: pokemons[species.id - 2],
+      next: pokemons[species.id],
+    },
+  }));
+
+  return [{
+    params: { pokemon: "/" },
+    props: routes[0]!.props,
+    },
+    ...routes
+  ]
+};
+
+console.log(Astro.url.pathname)
+
+function capitalize(sentence: string) {
+  return sentence
+    .split(" ")
+    .map((word) => word[0]?.toUpperCase() + word.substring(1).toLowerCase())
+    .join(" ");
+}
+
+const { species, last, next } = Astro.props;
+---
+
+<Base title={capitalize(species.name.replace("-", " "))}>
+  {
+    [
+      ...(last?.pokemon_v2_pokemons || []),
+      ...(next?.pokemon_v2_pokemons || []),
+    ].map(
+      (pokemon) =>
+        pokemon.image && (
+          <link slot="head" rel="preload" href={pokemon.image.src} as="image" />
+        )
+    )
+  }
+
+  {last && <link slot="head" rel="prefetch" href={`/${last.name}`} />}
+  {next && <link slot="head" rel="prefetch" href={`/${next.name}`} />}
+
+  <main class="flex flex-row place-items-center justify-center gap-x-5 p-10">
+    {
+      last && (
+        <a href={`/${last.name}`} data-astro-prefetch="load" id="last" aria-label="Go back to last Pokemon">
+          <Icon name="mdi:menu-left-outline" size={60} />
+        </a>
+      )
+    }
+
+    <div class="flex flex-col gap-y-4">
+      {
+        species.pokemon_v2_pokemons.map((pokemon, index) => (
+          <PokeDisplay pokemon={pokemon} loading={index < 3 ? "eager": "lazy"} />
+        ))
+      }
+    </div>
+
+    {
+      next && (
+        <a href={`/${next.name}`} data-astro-prefetch="load" id="next" aria-label="Go to next pokemon">
+          <Icon name="mdi:menu-right-outline" size={60} />
+        </a>
+      )
+    }
+  </main>
+</Base>
+
+<script>
+  let anchorNext: HTMLAnchorElement | null;
+  let anchorLast: HTMLAnchorElement | null;
+
+  function setAnchors() {
+    anchorNext = document.getElementById("next") as HTMLAnchorElement | null;
+    anchorLast = document.getElementById("last") as HTMLAnchorElement | null;
+  }
+
+  setAnchors();
+
+  document.addEventListener("astro:after-swap", setAnchors);
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowRight" || event.key === "ArrowDown")
+      anchorNext?.click();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowLeft" || event.key === "ArrowUp")
+      anchorLast?.click();
+  });
+</script>

@@ -1,49 +1,48 @@
 ---
 import TypeCards from "./pokemon/TypeCards.astro";
 import AbilityList from "./pokemon/AbilityList.astro";
-import type { Pokemon } from "../pokeapi/pokemon";
+import { substituteImage, type Pokemon } from "../pokeapi/pokemon";
+import PokeName from "./pokemon/PokeName.astro";
+import { Image } from "astro:assets";
 
 interface Props {
   pokemon: Pokemon;
+  loading?: "eager" | "lazy"
 }
 
-const { pokemon } = Astro.props;
+const { pokemon, loading = "eager" } = Astro.props;
 ---
 
-<section>
-  <div>
-    {
-      pokemon.image && (
-        <img
-          src={pokemon.image.src}
-          alt={pokemon.name}
-          width={400}
-          height={400}
-          loading="eager"
-          decoding="async"
-        />
-      )
-    }
-  </div>
+<section class="grid grid-cols-[1fr_0.6fr] gap-x-8">
+  <Image
+    class="ring ring-slate-600 rounded-lg p-4"
+    src={pokemon.image
+      ? pokemon.image.src
+      : substituteImage.src}
+    alt={pokemon.name}
+    width={400}
+    loading={loading}
+    height={400}
+  />
 
-  <article>
-    <div>
-      <h2 class="name" transition:name="poke-name">{pokemon.name.replace("-", " ")} #{pokemon.id}</h2>
+  <article class="flex flex-col gap-y-6">
+    <div class="pt-2 mb-2">
+      <PokeName name={pokemon.name} id={pokemon.id} />
       <TypeCards types={pokemon.pokemon_v2_pokemontypes} />
     </div>
 
     <AbilityList abilities={pokemon.pokemon_v2_pokemonabilities} />
 
-    <table>
-      <thead>
+    <table class="grid grid-cols-2">
+      <thead class="ml-10 col-span-2">
         <th colspan="2">Info</th>
       </thead>
-      <tbody>
-        <tr>
+      <tbody class="pr-10">
+        <tr class="flex-1 flex flex-row justify-between">
           <th>Height:</th>
           <td>{pokemon.height / 10}m</td>
         </tr>
-        <tr>
+        <tr class="flex flex-row justify-between">
           <th>Weight:</th>
           <td>{pokemon.weight / 10}kg</td>
         </tr>
@@ -53,57 +52,24 @@ const { pokemon } = Astro.props;
 </section>
 
 <style>
-  section {
+  .section {
     display: grid;
     grid-template-columns: 1fr 1fr;
 
     column-gap: 3rem;
-
-    place-items: center start;
   }
 
-  section > div {
+  .section > .div {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
   }
 
-  article {
+  .article {
     display: flex;
     flex-direction: column;
-    align-items: start;
     justify-content: center;
     row-gap: 1rem;
-  }
-
-  a {
-    display: grid;
-    place-items: center;
-
-    color: unset;
-    font-size: 4.5rem;
-
-    /* outline: 1px solid red; */
-
-    margin: -0.5rem;
-  }
-
-  img {
-    border: 1px solid black;
-    border-radius: 1rem;
-  }
-
-  .name {
-    text-transform: capitalize;
-  }
-
-  th,
-  td {
-    padding-left: 0.5rem;
-  }
-
-  thead > th {
-    align-self: start;
   }
 </style>

@@ -9,38 +9,15 @@ const { abilities } = Astro.props;
 ---
 
 <div>
-  <span>Abilities:</span>
+  <span class="text-lg font-bold">Abilities:</span>
 
   <ul>
     {
       abilities.map((ability) => (
-        <li class:list={{ hidden: ability.is_hidden }}>
-          {ability.pokemon_v2_ability.name.replaceAll("-", " ")}
-        </li>
+        !ability.is_hidden
+          ? <li class="capitalize">{ability.pokemon_v2_ability.name.replaceAll("-", " ")}</li>
+          : <li class="capitalize text-gray-600">{ability.pokemon_v2_ability.name.replaceAll("-", " ")}</li>
       ))
     }
   </ul>
 </div>
-
-<style>
-  span {
-    font-weight: bold;
-  }
-
-  ul {
-    width: fit-content;
-    list-style: none;
-  }
-
-  li {
-    text-transform: capitalize;
-  }
-
-  .hidden {
-    opacity: 0.5;
-  }
-
-  .hidden::after {
-    content: " (hidden)";
-  }
-</style>
