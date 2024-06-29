@@ -49,18 +49,19 @@ const { species, last, next } = Astro.props;
     ].map(
       (pokemon) =>
         pokemon.image && (
-          <link slot="head" rel="preload" href={pokemon.image.src} as="image" />
+          <link slot="head" rel="preload" href={`${import.meta.env.BASE_URL}/${pokemon.image.src}`} as="image" />
         )
     )
   }
 
-  {last && <link slot="head" rel="prefetch" href={`/${last.name}`} />}
-  {next && <link slot="head" rel="prefetch" href={`/${next.name}`} />}
+  {last && <link slot="head" rel="prefetch" href={`${import.meta.env.BASE_URL}/${last.name}`} />}
+  {next && <link slot="head" rel="prefetch" href={`${import.meta.env.BASE_URL}/${next.name}`} />}
 
   <main class="flex flex-row place-items-center justify-center gap-x-5 p-10">
     {
       last && (
-        <a href={`/${last.name}`} data-astro-prefetch="load" id="last" aria-label="Go back to last Pokemon">
+        <a href={`${import.meta.env.BASE_URL}/${last.name}`} data-astro-prefetch="load"
+          id="last" aria-label="Go back to last Pokemon">
           <Icon name="mdi:menu-left-outline" size={60} />
         </a>
       )
@@ -76,7 +77,9 @@ const { species, last, next } = Astro.props;
 
     {
       next && (
-        <a href={`/${next.name}`} data-astro-prefetch="load" id="next" aria-label="Go to next pokemon">
+        <a href={`${import.meta.env.BASE_URL}/${next.name}`}
+          data-astro-prefetch="load" id="next"
+          aria-label="Go to next pokemon">
           <Icon name="mdi:menu-right-outline" size={60} />
         </a>
       )

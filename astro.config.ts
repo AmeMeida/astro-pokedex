@@ -19,6 +19,8 @@ const speciesNames = resultPokemons.results.map((species) => species.name);
 export default defineConfig({
   output: "static",
   prefetch: true,
+  site: "https://amemeida.github.io",
+  base: "astro-pokedex",
   redirects: {
     ...Object.fromEntries(
       speciesNames.map((name, index) => [`/pokemon/${index + 1}`, `/pokemon/${name}`])
