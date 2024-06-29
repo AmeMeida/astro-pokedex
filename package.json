@@ -3,9 +3,10 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "tauri dev",
+    "dev": "astro dev",
+    "dev:tauri": "tauri dev",
     "start": "astro dev",
-    "build": "astro check && tauri build",
+    "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },

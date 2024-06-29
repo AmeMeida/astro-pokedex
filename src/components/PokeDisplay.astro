@@ -39,11 +39,11 @@ const { pokemon, loading = "eager" } = Astro.props;
       </thead>
       <tbody class="pr-10">
         <tr class="flex-1 flex flex-row justify-between">
-          <th>Height:</th>
+          <th class="pr-10">Height:</th>
           <td>{pokemon.height / 10}m</td>
         </tr>
         <tr class="flex flex-row justify-between">
-          <th>Weight:</th>
+          <th class="pr-10">Weight:</th>
           <td>{pokemon.weight / 10}kg</td>
         </tr>
       </tbody>
