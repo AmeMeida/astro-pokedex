@@ -1,6 +1,7 @@
 import { defineConfig } from "astro/config";
 import icon from "astro-icon";
 import tailwind from "@astrojs/tailwind";
+
 type Response = {
   count: number;
   next: string | null;
@@ -10,10 +11,14 @@ type Response = {
     url: string;
   }[];
 };
+
 const resultPokemons: Response = await fetch(
   "https://pokeapi.co/api/v2/pokemon-species?limit=10000"
 ).then((response) => response.json());
-const speciesNames = resultPokemons.results.map((species) => species.name);
+
+const speciesNames = resultPokemons.results
+  .map((species) => species.name)
+  .filter(Boolean);
 
 // https://astro.build/config
 export default defineConfig({
@@ -23,7 +28,7 @@ export default defineConfig({
   base: "astro-pokedex",
   redirects: {
     ...Object.fromEntries(
-      speciesNames.map((name, index) => [`/pokemon/${index + 1}`, `/pokemon/${name}`])
+      speciesNames.map((name, index) => [`/astro-pokedex/${index + 1}`, `/astro-pokedex/${name}/`])
     ),
   },
   image: {
